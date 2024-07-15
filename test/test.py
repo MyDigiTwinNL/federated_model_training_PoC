@@ -179,9 +179,6 @@ LEFT JOIN
     ) BP ON P.ID = BP.PATIENTID -- Added join for Systolic Blood Pressure
 """
 
-
-#print(f">>>>>>>>${str(current_path)}")
-
 ## Mock client
 client = MockAlgorithmClient(
     datasets=[
