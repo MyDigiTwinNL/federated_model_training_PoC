@@ -1,0 +1,173 @@
+
+SELECT 
+    P.ID AS PatientID,
+    HDC.EFFECTIVE_DATE AS HDL_Effective_Date,
+    HDC.VALUE AS HDL_Cholesterol,
+    LDC.EFFECTIVE_DATE AS LDL_Effective_Date,
+    LDC.VALUE AS LDL_Cholesterol
+
+FROM 
+    PATIENTS P
+LEFT JOIN 
+    (
+        SELECT 
+            PATIENTID, 
+            VALUE, 
+            EFFECTIVE_DATE
+        FROM 
+            HDL_CHOLESTEROL
+        WHERE 
+            EFFECTIVE_DATE IN (
+                SELECT 
+                    MAX(EFFECTIVE_DATE)
+                FROM 
+                    HDL_CHOLESTEROL
+                GROUP BY 
+                    PATIENTID
+            )
+    ) HDC ON P.ID = HDC.PATIENTID
+LEFT JOIN 
+    (
+        SELECT 
+            PATIENTID, 
+            VALUE, 
+            EFFECTIVE_DATE
+        FROM 
+            LDL_CHOLESTEROL
+        WHERE 
+            EFFECTIVE_DATE IN (
+                SELECT 
+                    MAX(EFFECTIVE_DATE)
+                FROM 
+                    LDL_CHOLESTEROL
+                GROUP BY 
+                    PATIENTID
+            )
+    ) LDC ON P.ID = LDC.PATIENTID;
+
+
+
+urn:uuid:0000b035-8ff4-574c-89b1-e3a7c0a47d28
+
+
+SELECT * FROM HDL_CHOLESTEROL where PATIENTID='urn:uuid:0000b035-8ff4-574c-89b1-e3a7c0a47d28'
+
+SELECT 
+    P.ID AS Patient_ID,
+    MAX(H.EFFECTIVE_DATE) AS MostRecentHDLDate,
+    H.VALUE AS MostRecentHDLValue,
+    MAX(L.EFFECTIVE_DATE) AS MostRecentLDLDate,
+    L.VALUE AS MostRecentLDLValue
+FROM 
+    PATIENTS P
+LEFT JOIN 
+    HDL_CHOLESTEROL H ON P.ID = H.PATIENTID
+LEFT JOIN 
+    LDL_CHOLESTEROL L ON P.ID = L.PATIENTID
+GROUP BY 
+    P.ID;
+
+
+SELECT P.ID, P.T2D_STATUS,
+       GROUP_CONCAT(TC.VALUE || ', ') AS TOTAL_CHOLESTEROLS,
+       GROUP_CONCAT(HC.VALUE || ', ') AS HDL_CHOLESTEROLS,
+       GROUP_CONCAT(EC.VALUE || ', ') AS EGFR_VALUES
+FROM PATIENTS P
+LEFT JOIN TOTAL_CHOLESTEROL TC ON P.ID = TC.PATIENTID
+LEFT JOIN HDL_CHOLESTEROL HC ON P.ID = HC.PATIENTID
+LEFT JOIN EGFR EC ON P.ID = EC.PATIENTID
+GROUP BY P.ID, P.T2D_STATUS;
+
+
+
+SELECT E.id AS employee_id, E.name, P.value AS latest_payslip_value, P.date AS latest_payslip_date, S.value AS latest_sick_leave_value, S.date AS latest_sick_leave_date
+FROM Employee E
+LEFT JOIN (
+    SELECT employee_id, MAX(date) AS max_date
+    FROM Payslips
+    GROUP BY employee_id
+) P ON E.id = P.employee_id
+LEFT JOIN Payslips PS ON E.id = PS.employee_id AND P.max_date = PS.date
+LEFT JOIN (
+    SELECT employee_id, MAX(date) AS max_date
+    FROM Sickleaves
+    GROUP BY employee_id
+) S ON E.id = S.employee_id
+LEFT JOIN Sickleaves SL ON E.id = SL.employee_id AND S.max_date = SL.date;
+
+
+SELECT E.id AS employee_id, E.name, P.value AS latest_payslip_value, P.date AS latest_payslip_date, S.value AS latest_sick_leave_value, S.date AS latest_sick_leave_date
+FROM Employee E
+LEFT JOIN (
+    SELECT employee_id, value, date
+    FROM Payslips
+    WHERE date = (SELECT MAX(date) FROM Payslips WHERE employee_id = Payslips.employee_id)
+) P ON E.id = P.employee_id
+LEFT JOIN (
+    SELECT employee_id, value, date
+    FROM Sickleaves
+    WHERE date = (SELECT MAX(date) FROM Sickleaves WHERE employee_id = Sickleaves.employee_id)
+) S ON E.id = S.employee_id
+ORDER BY E.id;
+
+
+
+SELECT 
+    P.ID AS Patient_ID, 
+    H.VALUE AS recent_hdl_val, 
+    H.DATE AS recent_hdl_date,
+    L.VALUE AS recent_ldl_val, 
+    L.DATE AS recent_ldl_date
+FROM 
+    PATIENTS P
+LEFT JOIN(
+    SELECT PATIENTID, VALUE, DATE
+    FROM 
+)
+    HDL_CHOLESTEROL H ON P.ID = H.PATIENTID
+LEFT JOIN 
+    LDL_CHOLESTEROL L ON P.ID = L.PATIENTID
+GROUP BY 
+    P.ID;
+
+
+
+
+
+
+
+SELECT P.ID AS PATIENT_ID, MAX(H.EFFECTIVE_DATE) AS MOST_RECENT_DATE, H.VALUE AS MOST_RECENT_HDL_CHOLESTEROL
+FROM PATIENTS P
+JOIN HDL_CHOLESTEROL H ON P.ID = H.PATIENTID
+GROUP BY P.ID
+ORDER BY P.ID;
+
+
+WITH LDL_SUBQUERY AS (
+    SELECT 
+        P.ID AS PATIENT_ID,
+        MAX(L.VALUE) AS MOST_RECENT_LDL_CHOLESTEROL
+    FROM 
+        PATIENTS P
+    JOIN 
+        LDL_CHOLESTEROL L ON P.ID = L.PATIENTID
+    WHERE 
+        P.DECEASED_DATE IS NULL
+    GROUP BY 
+        P.ID
+)
+SELECT 
+    P.ID AS PATIENT_ID,
+    MAX(H.VALUE) AS MOST_RECENT_HDL_CHOLESTEROL,
+    LDL.MOST_RECENT_LDL_CHOLESTEROL
+FROM 
+    PATIENTS P
+JOIN 
+    HDL_CHOLESTEROL H ON P.ID = H.PATIENTID
+LEFT JOIN 
+    LDL_SUBQUERY LDL ON P.ID = LDL.PATIENT_ID
+WHERE 
+    P.DECEASED_DATE IS NULL
+GROUP BY 
+    P.ID;
+
