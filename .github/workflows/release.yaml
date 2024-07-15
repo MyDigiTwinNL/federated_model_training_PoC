@@ -20,8 +20,8 @@ jobs:
             password: ${{ secrets.DOCKER_PASSWORD }}
 
         - name: Run Makefile Rule
-          run: docker build -t poc_model_training .
+          run: docker build -t hcadavidescience/poc_model_training .
 
         - name: Push Docker image
           run: |
-            docker push poc_model_training
+            docker push hcadavidescience/poc_model_training
