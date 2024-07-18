@@ -10,6 +10,15 @@ The base code for this algorithm has been created via the
 [v6-algorithm-template](https://github.com/vantage6/v6-algorithm-template)
 template generator.
 
+
+### To run the algorithm test:
+
+Install the algorithm as a local package:
+`pip install -e .`
+
+Run the test:
+`python test/test.py`
+
 ### Checklist
 
 Note that the template generator does not create a completely ready-to-use

@@ -22,6 +22,7 @@ def partial(
     # TODO this is a simple example to show you how to return something simple.
     # Replace it by your own code
     info("Computing something")
+    info(f">>>> colname argument:{colname}")
     column_headers = df1.columns.values.tolist()
     #result = df1[["", "Age"]].groupby("Gender").mean()
 
