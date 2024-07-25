@@ -7,6 +7,7 @@ encryption if that is enabled). From there, they are sent to the partial task
 or directly to the user (if they requested partial results).
 """
 import pandas as pd
+import time
 from typing import Any
 
 from vantage6.algorithm.tools.util import info, warn, error
@@ -26,9 +27,8 @@ def partial(
     column_headers = df1.columns.values.tolist()
     #result = df1[["", "Age"]].groupby("Gender").mean()
 
-
-
-
+    print("Sleeping for 120 secs")    
+    time.sleep(120)
 
 
     # Return results to the vantage6 server.

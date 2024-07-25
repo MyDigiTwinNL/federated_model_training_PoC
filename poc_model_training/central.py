@@ -52,6 +52,11 @@ def central(
     results = client.wait_for_results(task_id=task.get("id"))
     info("Results obtained!")
 
+
+    # Request execution of 'partial' to nodes:
+        
+
+
     # TODO probably you want to aggregate or combine these results here.
     # For instance:
     # results = [sum(result) for result in results]
