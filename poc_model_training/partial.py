@@ -23,14 +23,8 @@ def partial(
     # TODO this is a simple example to show you how to return something simple.
     # Replace it by your own code
     info("Computing something")
-    info(f">>>> colname argument:{colname}")
-    column_headers = df1.columns.values.tolist()
-    #result = df1[["", "Age"]].groupby("Gender").mean()
-    #print("Sleeping for 120 secs")    
-    #time.sleep(120)
+    info(f">>>> colname argument:{colname}")    
+    
+    return df1.loc[:, colname]
+    
 
-    # Return results to the vantage6 server.
-    # TODO make sure no privacy sensitive data is shared
-    return column_headers
-
-# TODO Feel free to add more partial functions here.
