@@ -25,6 +25,6 @@ def partial(
     info("Computing something")
     info(f">>>> colname argument:{colname}")    
     
-    return df1.loc[:, colname]
+    return df1[colname].max()
     
 

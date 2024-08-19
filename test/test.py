@@ -17,7 +17,8 @@ from pathlib import Path
 # get path of current directory
 current_path = Path(__file__).parent
 
-sql_query = """
+sql_query_a = "SELECT VALUE FROM HEMOGLOBIN"
+sql_query_b = """
 SELECT
     P.ID AS PatientID,
     P.GENDER,
@@ -186,13 +187,13 @@ client = MockAlgorithmClient(
         [{
             "database": str(current_path / "dummydb-10k.db.sqlite"),
             "db_type": "sql",
-            "query": sql_query,
+            "query": sql_query_a,
         }],
         # Data for second organization
         [{
             "database": str(current_path / "dummydb-10k.db.sqlite"),
             "db_type": "sql",
-            "query": sql_query,
+            "query": sql_query_a,
         }]
     ],
     module="poc_model_training"
@@ -225,7 +226,7 @@ print(results)
 task = client.task.create(
     input_={
         "method":"partial",
-        "kwargs": {"colname":"SYSTOLIC"}
+        "kwargs": {"colname":"VALUE"}
     },
     organizations=org_ids,
 )
