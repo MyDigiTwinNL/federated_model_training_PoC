@@ -26,10 +26,8 @@ def partial(
     info(f">>>> colname argument:{colname}")
     column_headers = df1.columns.values.tolist()
     #result = df1[["", "Age"]].groupby("Gender").mean()
-
-    print("Sleeping for 120 secs")    
-    time.sleep(120)
-
+    #print("Sleeping for 120 secs")    
+    #time.sleep(120)
 
     # Return results to the vantage6 server.
     # TODO make sure no privacy sensitive data is shared
