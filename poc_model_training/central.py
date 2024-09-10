@@ -10,12 +10,23 @@ from typing import Any
 from vantage6.algorithm.tools.util import info, warn, error
 from vantage6.algorithm.tools.decorators import algorithm_client
 from vantage6.algorithm.client import AlgorithmClient
+import numpy as np
+
 
 
 @algorithm_client
 def central(
     client: AlgorithmClient, arg1
 ) -> Any:
+    
+
+    """
+    - Creating a central model
+    - Request training on each node (each node trains its own model - with a given number of epochs)
+    - Wait for the results, get weights and biases from the nodes.
+    - aggregate weights on the server
+    """
+
 
     """ Central part of the algorithm """
     # TODO implement this function. Below is an example of a simple but typical
@@ -65,3 +76,16 @@ def central(
     return results
 
 # TODO Feel free to add more central functions here.
+
+
+def aggregate_weights(client_weights):
+    """"
+    Two layers are asumed
+    TODO generalize this
+    """
+    aggregated_weights1 = np.mean([weights[0] for weights in client_weights], axis=0)
+    aggregated_weights2 = np.mean([weights[1] for weights in client_weights], axis=0)
+    aggregated_bias1 = np.mean([weights[2] for weights in client_weights], axis=0)
+    aggregated_bias2 = np.mean([weights[3] for weights in client_weights], axis=0)
+    
+    return aggregated_weights1, aggregated_weights2, aggregated_bias1, aggregated_bias2

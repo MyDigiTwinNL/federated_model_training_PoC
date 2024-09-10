@@ -19,162 +19,160 @@ current_path = Path(__file__).parent
 
 sql_query_a = "SELECT VALUE FROM HEMOGLOBIN"
 sql_query_b = """
-SELECT
-    P.ID AS PatientID,
-    P.GENDER,
-    P.BIRTHDATE,
-    P.T2D_STATUS,
-    P.T2D_ONSET_DATE,
+SELECT 
+    P.CVD_STATUS,
     P.STROKE_STATUS,
-    HDL.EFFECTIVE_DATE AS HDL_Effective_Date,
-    HDL.VALUE AS HDL,
-    LDL.EFFECTIVE_DATE AS LDL_Effective_Date,
-    LDL.VALUE AS LDL,
-    PA.VALUE AS Plasma_Albumin,
-    CA.VALUE AS Creatinine, -- Added line for Creatinine
-    HBA.VALUE AS HbA1C, -- Added line for HbA1C
-    HB.VALUE AS Hemoglobin, -- Added line for Hemoglobin
-    EGF.VALUE AS EGFR,-- Added line for EGFR
-	BP.SYSTOLIC_VALUE,
-	BP.DIASTOLIC_VALUE
-FROM
+    P.MYOCARDIAL_INFARCTION_STATUS,
+    P.HEART_FAILURE_STATUS,
+    P.GENDER,
+    P.T2D_STATUS,
+    HDL.VALUE AS LAST_HDL,
+    LDL.VALUE AS LAST_LDL,
+    PA.VALUE AS LAST_PA,
+    CA.VALUE AS LAST_CREATININE, -- Added line for Creatinine
+    HBA.VALUE AS LAST_HBA1C, -- Added line for HbA1C
+    HB.VALUE AS LAST_HEMOGLOBIN, -- Added line for Hemoglobin
+    EGF.VALUE AS LAST_EGFR,-- Added line for EGFR
+	BP.SYSTOLIC_VALUE AS LAST_SYSTOLIC, 
+	BP.DIASTOLIC_VALUE AS LAST_DIASTOLIC
+FROM 
     PATIENTS P
-LEFT JOIN
+LEFT JOIN 
     (
-        SELECT
-            PATIENTID,
-            VALUE,
+        SELECT 
+            PATIENTID, 
+            VALUE, 
             EFFECTIVE_DATE
-        FROM
+        FROM 
             HDL_CHOLESTEROL
-        WHERE
+        WHERE 
             EFFECTIVE_DATE IN (
-                SELECT
+                SELECT 
                     MAX(EFFECTIVE_DATE)
-                FROM
+                FROM 
                     HDL_CHOLESTEROL
-                GROUP BY
+                GROUP BY 
                     PATIENTID
             )
     ) HDL ON P.ID = HDL.PATIENTID
-LEFT JOIN
+LEFT JOIN 
     (
-        SELECT
-            PATIENTID,
-            VALUE,
+        SELECT 
+            PATIENTID, 
+            VALUE, 
             EFFECTIVE_DATE
-        FROM
+        FROM 
             LDL_CHOLESTEROL
-        WHERE
+        WHERE 
             EFFECTIVE_DATE IN (
-                SELECT
+                SELECT 
                     MAX(EFFECTIVE_DATE)
-                FROM
+                FROM 
                     LDL_CHOLESTEROL
-                GROUP BY
+                GROUP BY 
                     PATIENTID
             )
     ) LDL ON P.ID = LDL.PATIENTID
-LEFT JOIN
+LEFT JOIN 
     (
-        SELECT
-            PATIENTID,
+        SELECT 
+            PATIENTID, 
             VALUE
-        FROM
+        FROM 
             PLASMA_ALBUNIM
-        WHERE
+        WHERE 
             EFFECTIVE_DATE IN (
-                SELECT
+                SELECT 
                     MAX(EFFECTIVE_DATE)
-                FROM
+                FROM 
                     PLASMA_ALBUNIM
-                GROUP BY
+                GROUP BY 
                     PATIENTID
             )
     ) PA ON P.ID = PA.PATIENTID
-LEFT JOIN
+LEFT JOIN 
     (
-        SELECT
-            PATIENTID,
+        SELECT 
+            PATIENTID, 
             VALUE
-        FROM
+        FROM 
             CREATININE
-        WHERE
+        WHERE 
             EFFECTIVE_DATE IN (
-                SELECT
+                SELECT 
                     MAX(EFFECTIVE_DATE)
-                FROM
+                FROM 
                     CREATININE
-                GROUP BY
+                GROUP BY 
                     PATIENTID
             )
     ) CA ON P.ID = CA.PATIENTID -- Added join for Creatinine
-LEFT JOIN
+LEFT JOIN 
     (
-        SELECT
-            PATIENTID,
+        SELECT 
+            PATIENTID, 
             VALUE
-        FROM
+        FROM 
             HBA1C
-        WHERE
+        WHERE 
             EFFECTIVE_DATE IN (
-                SELECT
+                SELECT 
                     MAX(EFFECTIVE_DATE)
-                FROM
+                FROM 
                     HBA1C
-                GROUP BY
+                GROUP BY 
                     PATIENTID
             )
     ) HBA ON P.ID = HBA.PATIENTID -- Added join for HbA1C
-LEFT JOIN
+LEFT JOIN 
     (
-        SELECT
-            PATIENTID,
+        SELECT 
+            PATIENTID, 
             VALUE
-        FROM
+        FROM 
             HEMOGLOBIN
-        WHERE
+        WHERE 
             EFFECTIVE_DATE IN (
-                SELECT
+                SELECT 
                     MAX(EFFECTIVE_DATE)
-                FROM
+                FROM 
                     HEMOGLOBIN
-                GROUP BY
+                GROUP BY 
                     PATIENTID
             )
     ) HB ON P.ID = HB.PATIENTID -- Added join for Hemoglobin
-LEFT JOIN
+LEFT JOIN 
     (
-        SELECT
-            PATIENTID,
+        SELECT 
+            PATIENTID, 
             VALUE
-        FROM
+        FROM 
             EGFR
-        WHERE
+        WHERE 
             EFFECTIVE_DATE IN (
-                SELECT
+                SELECT 
                     MAX(EFFECTIVE_DATE)
-                FROM
+                FROM 
                     EGFR
-                GROUP BY
+                GROUP BY 
                     PATIENTID
             )
     ) EGF ON P.ID = EGF.PATIENTID -- Added join for EGFR
-LEFT JOIN
+LEFT JOIN 
     (
-        SELECT
-            PATIENTID,
+        SELECT 
+            PATIENTID, 
             SYSTOLIC_VALUE,
 			DIASTOLIC_VALUE
-        FROM
+        FROM 
             BLOODPRESSURE
-        WHERE
+        WHERE 
             EFFECTIVE_DATE IN (
-                SELECT
+                SELECT 
                     MAX(EFFECTIVE_DATE)
-                FROM
+                FROM 
                     BLOODPRESSURE
-                GROUP BY
+                GROUP BY 
                     PATIENTID
             )
     ) BP ON P.ID = BP.PATIENTID -- Added join for Systolic Blood Pressure
