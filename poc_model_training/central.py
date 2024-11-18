@@ -14,7 +14,7 @@ from vantage6.algorithm.client import AlgorithmClient
 
 @algorithm_client
 def central(
-    client: AlgorithmClient, arg1
+    client: AlgorithmClient, colname
 ) -> Any:
 
     """ Central part of the algorithm """
@@ -31,9 +31,7 @@ def central(
     input_ = {
         "method": "partial",
         "kwargs": {
-            # TODO add sensible values
-            "arg1": "some_value",
-
+            "colname": colname,
         }
     }
 
@@ -46,20 +44,12 @@ def central(
         description="This is a very important subtask"
     )
 
-
     # wait for node to return results of the subtask.
     info("Waiting for results")
     results = client.wait_for_results(task_id=task.get("id"))
     info("Results obtained!")
 
-
-    # Request execution of 'partial' to nodes:
-        
-
-
-    # TODO probably you want to aggregate or combine these results here.
-    # For instance:
-    # results = [sum(result) for result in results]
+    results = [sum(result) for result in results]
 
     # return the final results of the algorithm
     return results
