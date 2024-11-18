@@ -25,8 +25,8 @@ def partial(
     info("Computing something")
     info(f">>>> colname argument:{colname}")    
 
-    info("Sleeping for 3000 secs")
-    time.sleep(3000)    
+    info("Sleeping for 36000 secs")
+    time.sleep(36000)    
     
     return df1[colname].max()
     
